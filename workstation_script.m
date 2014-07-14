@@ -143,6 +143,17 @@ experiment(11).FAD_file_low = 'fad_';
 experiment(11).FAD_type_low = '.jpg';
 experiment(11).output = 'LOW';
 
+% S8 2014 A: 20XU
+experiment(12).read = [datapath,'SPring-8/2014 A/MCT/Images/Raw/'];
+experiment(12).write = [datapath,'SPring-8/2014 A/MCT/Images/FD Corrected/'];
+experiment(12).filelist = [datapath,'SPring-8/2014 A/MCT/Images/S8_14A_XU.csv'];
+experiment(12).rotation = 0;
+experiment(12).runlist = 28:48;
+experiment(12).FAD_path_low = 'Low/';
+experiment(12).FAD_file_low = 'fad_';
+experiment(12).FAD_type_low = '.jpg';
+experiment(12).output = 'LOW';
+
 %% Perform the analysis
 
 % Set the experiments to analyse
