@@ -1,0 +1,15 @@
+Copy data to data directory on Hydra (WinSCP or Webdrive)
+SSH to Corvus via Hydra
+
+# cd /data/users/mdonnelley/Code
+# ./corvus_script.pl '/data/users/mdonnelley/2010B/2010B Data.csv' '/data/users/mdonnelley/2010B/' '/data/users/mdonnelley/2010B FAD/'
+# more S8FAD0
+
+Check that the job is running
+
+# qstat | grep mdonnelley
+
+Check the output on completion
+
+# more S8FAD0.oXXXXX
+
