@@ -1,34 +1,39 @@
 function output = EvenOutImage(input)
 
 %
-%******************************************************
-% Remove horizontal bands from the beam movement
+%**********************************************************
+% Perform image flattening
 %
 % Written by: Martin Donnelley
+% Date: 27/11/2012
+% Last updated: 27/11/2012
 %
-% Utilises eliptical filter creation function from: 
-% http://www.clear.rice.edu/elec301/Projects01/image_filt/matlab.html
+% From Andreas Fouras - Nov 26 2012
+% Looking at the data 1 row at a time, adjust each pixel intensity so that
+% the row has an average intensity of 1 (or some other value, such as the
+% original image average intensity). Then do the same along each column of
+% the image.  There is some advantage of perhaps repeating another once or
+% twice. Let me know how this goes, or if there are any questions etc. (if
+% it works, a citation might be nice.)
 %
 %******************************************************
-%
 
-width = size(input,2);
-height = size(input,1);
-midw = floor(width/2);
-midh = floor(height/2);
+% The intended image mean
+IMAGEMEAN = 0.5;
+REPEAT = 2;
 
-% Perform FFT
-fftA = fftshift(fft2(input));
+output = double(input);
 
-% Create the eliptical high-pass filter
-filt = 1 - EFilter(size(input), .001, .025, 2);
-filt(midh-1:midh+1,:) = 1;
-
-% Apply the filter in the frequency domain
-fftA = fftA .* filt;
-
-% Perform inverse FFT
-output = abs(ifft2(ifftshift(fftA)));
-
-% Adjust the image brightness to match the input
-output = output + (mean2(input) - mean2(output));
+for i = 1:REPEAT,
+    
+    % Adjust each pixels intensity so that the row has an average intensity of imageMean
+    rowMean = mean(output,2);
+    denominator = repmat(rowMean,1,size(output,2));
+    output = IMAGEMEAN .* output ./ denominator;
+    
+    % Adjust each pixels intensity so that the column has an average intensity of imageMean
+    colMean = mean(output,1);
+    denominator = repmat(colMean,size(output,1),1);
+    output = IMAGEMEAN .* output ./ denominator;
+    
+end
