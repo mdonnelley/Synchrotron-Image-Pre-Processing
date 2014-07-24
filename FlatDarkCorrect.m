@@ -37,7 +37,7 @@ for i = info.imagegofrom(imageset):info.imagegoto(imageset),
     final(isinf(final)) = 1;
     
 %     % Filter image to remove beam movement
-%     final = EvenOutImage(final);
+    final = EvenOutImage(final);
     
     % Rotate the output image
     final = imrotate(final,experiment.rotation);

@@ -1,11 +1,17 @@
 %% Set read and write directories and the location of the experiment filelist
 % NOTE: The read and write folder parameters must be followed by a trailing forwardslash
 
-if(isunix), datapath = '/data/RAID0/exports/processing/';
-% if(isunix), datapath = '/media/Synology/Imaging/';
-elseif(ispc), datapath = 'P:/'; end
+if(isunix),
+    datapath = '/data/RAID0/exports/processing/';
+    % 	datapath = '/media/Synology/Imaging/';
+elseif(ispc),
+    if(strcmp(getenv('COMPUTERNAME'),'GT-DSK-DONNELLE')), datapath = 'P:/'; end
+%     if(strcmp(getenv('COMPUTERNAME'),'GT-DSK-DONNELLE')), datapath = 'I:/'; end
+    if(strcmp(getenv('COMPUTERNAME'),'ASPEN')), datapath = 'S:/Temporary/WCH/'; end
+    if(strcmp(getenv('COMPUTERNAME'),'THREDBO')), datapath = 'C:/Users/Martin Donnelley/Documents/'; end
+end
 
-% S8 2009 B
+%% S8 2009 B
 experiment(1).read = [datapath,'SPring-8/2009 B/MCT/Images/Raw/'];
 experiment(1).write = [datapath,'SPring-8/2009 B/MCT/Images/FD Corrected/'];
 experiment(1).filelist = [datapath,'SPring-8/2009 B/MCT/Images/S8_09B_XU.csv'];
@@ -19,7 +25,7 @@ experiment(1).FAD_file_low = 'fad_';
 experiment(1).FAD_type_low = '.jpg';
 experiment(1).output = 'BOTH';
 
-% S8 2010 A
+%% S8 2010 A
 experiment(2).read = [datapath,'SPring-8/2010 A/Images/Raw/'];
 experiment(2).write = [datapath,'SPring-8/2010 A/Images/FD Corrected/'];
 experiment(2).filelist = [datapath,'SPring-8/2010 A/Images/S8_10A_B2.csv'];
@@ -33,7 +39,7 @@ experiment(2).FAD_file_low = '_fad_';
 experiment(2).FAD_type_low = '.jpg';
 experiment(2).output = 'BOTH';
 
-% S8 2010 B
+%% S8 2010 B
 experiment(3).read = [datapath,'SPring-8/2010 B/20XU/MCT/Images/Raw/'];
 experiment(3).write = [datapath,'SPring-8/2010 B/20XU/MCT/Images/FD Corrected/'];
 experiment(3).movies = [datapath,'SPring-8/2010 B/20XU/MCT/Images/FD Corrected/Movies/'];
@@ -48,7 +54,7 @@ experiment(3).FAD_file_low = '_fad_';
 experiment(3).FAD_type_low = '.jpg';
 experiment(3).output = 'BOTH';
 
-% S8 2011 A
+%% S8 2011 A
 experiment(4).read = [datapath,'SPring-8/2011 A/20B2/Images/Raw/'];
 experiment(4).write = [datapath,'SPring-8/2011 A/20B2/Images/FD Corrected/'];
 experiment(4).filelist = [datapath,'SPring-8/2011 A/20B2/Images/S8_11A_B2.csv'];
@@ -62,7 +68,7 @@ experiment(4).FAD_file_low = '_fad_';
 experiment(4).FAD_type_low = '.jpg';
 experiment(4).output = 'BOTH';
 
-% S8 2011 B
+%% S8 2011 B
 experiment(5).read = [datapath,'SPring-8/2011 B/20XU/MCT/Images/Raw/'];
 experiment(5).write = [datapath,'SPring-8/2011 B/20XU/MCT/Images/FD Corrected/'];
 experiment(5).movies = [datapath,'SPring-8/2011 B/20XU/MCT/Images/FD Corrected/Movies/'];
@@ -74,7 +80,7 @@ experiment(5).FAD_file_low = '_fad_';
 experiment(5).FAD_type_low = '.jpg';
 experiment(5).output = 'LOW';
 
-% S8 2012 A
+%% S8 2012 A
 experiment(6).read = [datapath,'SPring-8/2012 A/20XU/MCT/Images/Raw/'];
 experiment(6).write = [datapath,'SPring-8/2012 A/20XU/MCT/Images/FD Corrected/'];
 experiment(6).movies = [datapath,'SPring-8/2012 A/20XU/MCT/Images/FD Corrected/Movies/'];
@@ -86,7 +92,7 @@ experiment(6).FAD_file_low = 'fad_';
 experiment(6).FAD_type_low = '.jpg';
 experiment(6).output = 'LOW';
 
-% S8 2012 B
+%% S8 2012 B
 experiment(7).read = [datapath,'SPring-8/2012 B/MCT/Images/Raw/'];
 experiment(7).write = [datapath,'SPring-8/2012 B/MCT/Images/FD Corrected/'];
 experiment(7).movies = [datapath,'SPring-8/2012 B/MCT/Images/FD Corrected/Movies/'];
@@ -98,7 +104,7 @@ experiment(7).FAD_file_low = 'fad_';
 experiment(7).FAD_type_low = '.jpg';
 experiment(7).output = 'LOW';
 
-% AS 2013-1
+%% AS 2013-1
 experiment(7).read = [datapath,'Australian Synchrotron/2013-1/Images/Raw/'];
 experiment(7).write = [datapath,'Australian Synchrotron/2013-1/Images/FD Corrected/'];
 experiment(7).filelist = [datapath,'Australian Synchrotron/2013-1/Images/AS_2013-1.csv'];
@@ -109,7 +115,7 @@ experiment(7).FAD_file_low = 'fad_';
 experiment(7).FAD_type_low = '.jpg';
 experiment(7).output = 'LOW';
 
-% S8 2013 A: 20XU
+%% S8 2013 A: 20XU
 experiment(9).read = [datapath,'SPring-8/2013 A/20XU/MCT/Images/Raw/'];
 experiment(9).write = [datapath,'SPring-8/2013 A/20XU/MCT/Images/FD Corrected/'];
 experiment(9).movies = [datapath,'SPring-8/2013 A/20XU/MCT/Images/FD Corrected/Movies/'];
@@ -121,9 +127,10 @@ experiment(9).FAD_file_low = 'fad_';
 experiment(9).FAD_type_low = '.jpg';
 experiment(9).output = 'LOW';
 
-% S8 2013 A: 20B2
+%% S8 2013 A: 20B2
 experiment(10).read = [datapath,'SPring-8/2013 A/20B2/Images/Raw/'];
 experiment(10).write = [datapath,'SPring-8/2013 A/20B2/Images/FD Corrected/'];
+experiment(10).movies = [datapath,'SPring-8/2013 A/20B2/Images/FD Corrected/Movies/'];
 experiment(10).filelist = [datapath,'SPring-8/2013 A/20B2/Images/S8_13A_B2.csv'];
 experiment(10).rotation = 0;
 experiment(10).runlist = 1:2;
@@ -132,9 +139,10 @@ experiment(10).FAD_file_high = 'fad_';
 experiment(10).FAD_type_high = '.tif';
 experiment(10).output = 'HIGH';
 
-% S8 2013 B: 20XU
+%% S8 2013 B: 20XU
 experiment(11).read = [datapath,'SPring-8/2013 B/MCT/Images/Raw/'];
 experiment(11).write = [datapath,'SPring-8/2013 B/MCT/Images/FD Corrected/'];
+experiment(11).movies = [datapath,'SPring-8/2013 B/MCT/Images/FD Corrected/Movies/'];
 experiment(11).filelist = [datapath,'SPring-8/2013 B/MCT/Images/S8_13B_XU.csv'];
 experiment(11).rotation = 90;
 experiment(11).runlist = 1:64;
@@ -143,12 +151,13 @@ experiment(11).FAD_file_low = 'fad_';
 experiment(11).FAD_type_low = '.jpg';
 experiment(11).output = 'LOW';
 
-% S8 2014 A: 20XU
+%% S8 2014 A: 20XU
 experiment(12).read = [datapath,'SPring-8/2014 A/MCT/Images/Raw/'];
 experiment(12).write = [datapath,'SPring-8/2014 A/MCT/Images/FD Corrected/'];
+experiment(12).movies = [datapath,'SPring-8/2014 A/MCT/Images/FD Corrected/Movies/'];
 experiment(12).filelist = [datapath,'SPring-8/2014 A/MCT/Images/S8_14A_XU.csv'];
 experiment(12).rotation = 0;
-experiment(12).runlist = 28:48;
+experiment(12).runlist = 1:55;
 experiment(12).FAD_path_low = 'Low/';
 experiment(12).FAD_file_low = 'fad_';
 experiment(12).FAD_type_low = '.jpg';
@@ -164,10 +173,10 @@ for expts = exptlist,
     % Determine the data to process
     info = ReadS8Data(experiment(expts).filelist);
     
-    % Process each experiment
-    Process(experiment(expts), info);
+%     % Process each experiment
+%     Process(experiment(expts), info);
 
-%     % Create movies from selected FAD files in the filelist using VirtualDub
-%     if(ispc), VirtualDub(experiment(expts), info); end
+    % Create movies from selected FAD files in the filelist using VirtualDub
+    if(ispc), VirtualDub(experiment(expts), info); end
     
 end
