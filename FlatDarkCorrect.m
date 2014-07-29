@@ -35,24 +35,27 @@ for i = info.imagegofrom(imageset):info.imagegoto(imageset),
     final = (inimage - dark) ./ (flat - dark);    
     final(isnan(final)) = 0;
     final(isinf(final)) = 1;
-    
-%     % Filter image to remove beam movement
-    final = EvenOutImage(final);
-    
+
     % Rotate the output image
     final = imrotate(final,experiment.rotation);
     
-    % High quality output
+    % Crop the image
+    if isfield(experiment,'crop')
+        final = final(experiment.crop(2):experiment.crop(4),experiment.crop(1):experiment.crop(3));
+    end
+    
+    % Filter image to remove beam movement
+    final = EvenOutImage(final);
+
+    % Create and save the high quality version (NOTE: the images are now 16-bit, not the original dynamic range)
     if strcmp(experiment.output, 'HIGH') | strcmp(experiment.output, 'BOTH')
-        % Create and save the high quality version (NOTE: the images are now 16-bit, not the original dynamic range)
         SixteenBitImage = uint16(final * 65535);
         high = sprintf('%s%s%s%s%s%.4d%s',experiment.write,info.image{imageset},experiment.FAD_path_high,info.imagestart{imageset},experiment.FAD_file_high,i,experiment.FAD_type_high);
         imwrite(SixteenBitImage, high);
     end
     
-    % Low quality output
+    % Create and save the low quality version
     if strcmp(experiment.output, 'LOW') | strcmp(experiment.output, 'BOTH')
-        % Create and save the low quality version
         EightBitImage = uint8(final * 256);
         low = sprintf('%s%s%s%s%s%.4d%s',experiment.write,info.image{imageset},experiment.FAD_path_low,info.imagestart{imageset},experiment.FAD_file_low,i,experiment.FAD_type_low);
         imwrite(EightBitImage, low);

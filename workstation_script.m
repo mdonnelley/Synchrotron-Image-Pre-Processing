@@ -145,7 +145,8 @@ experiment(11).write = [datapath,'SPring-8/2013 B/MCT/Images/FD Corrected/'];
 experiment(11).movies = [datapath,'SPring-8/2013 B/MCT/Images/FD Corrected/Movies/'];
 experiment(11).filelist = [datapath,'SPring-8/2013 B/MCT/Images/S8_13B_XU.csv'];
 experiment(11).rotation = 90;
-experiment(11).runlist = 1:64;
+experiment(11).crop = [101 601 2060 2560];
+experiment(11).runlist = [9:13,16:17,20:24,26:30,33,35:44,46:50,52:54,56:58,60:61];
 experiment(11).FAD_path_low = 'Low/';
 experiment(11).FAD_file_low = 'fad_';
 experiment(11).FAD_type_low = '.jpg';
@@ -166,15 +167,15 @@ experiment(12).output = 'LOW';
 %% Perform the analysis
 
 % Set the experiments to analyse
-exptlist = [12];
+exptlist = [11];
 
 for expts = exptlist,
     
     % Determine the data to process
     info = ReadS8Data(experiment(expts).filelist);
     
-%     % Process each experiment
-%     Process(experiment(expts), info);
+    % Process each experiment
+    Process(experiment(expts), info);
 
     % Create movies from selected FAD files in the filelist using VirtualDub
     if(ispc), VirtualDub(experiment(expts), info); end
