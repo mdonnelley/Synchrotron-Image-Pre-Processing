@@ -14,7 +14,7 @@ function Process(experiment, info)
 % Process each experiment
 for imageset = experiment.runlist,
     
-    fix(clock)
+    start = now;
     
     fprintf('Processing imageset %d of %d\n', imageset, length(info.image));
     
@@ -24,6 +24,6 @@ for imageset = experiment.runlist,
     % Perform the correction
     FlatDarkCorrect(experiment, info, imageset, flat, dark);
     
-    fix(clock)
+    disp(['Total processing time was ', datestr(now - start,'HH:MM:SS:FFF')])
     
 end
