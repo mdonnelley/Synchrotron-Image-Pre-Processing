@@ -1,4 +1,4 @@
-function FlatDarkCorrect(experiment, info, imageset, flat, dark);
+function FlatDarkCorrect(expt, imageset, flat, dark);
 
 %
 %**********************************************************
@@ -11,25 +11,25 @@ function FlatDarkCorrect(experiment, info, imageset, flat, dark);
 %******************************************************
 %
 
-fprintf('Read directory %s%s\n', experiment.read, info.image{imageset});
-fprintf('Write directory %s%s\n', experiment.write, info.image{imageset});
+fprintf('Read directory %s%s\n', expt.file.raw, expt.info.image{imageset});
+fprintf('Write directory %s%s\n', expt.file.corrected, expt.info.image{imageset});
 
 % Check destination directories exists
-if strcmp(experiment.output, 'HIGH') | strcmp(experiment.output, 'BOTH')
-    mkdir([experiment.write,info.image{imageset},experiment.FAD_path_high]);
+if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
+    mkdir([expt.file.corrected,expt.info.image{imageset},expt.fad.FAD_path_high]);
 end
 
-if strcmp(experiment.output, 'LOW') | strcmp(experiment.output, 'BOTH')
-    mkdir([experiment.write,info.image{imageset},experiment.FAD_path_low]);
+if strcmp(expt.fad.output, 'LOW') | strcmp(expt.fad.output, 'BOTH')
+    mkdir([expt.file.corrected,expt.info.image{imageset},expt.fad.FAD_path_low]);
 end
 
 % Perform the correction
-for i = info.imagegofrom(imageset):info.imagegoto(imageset),
+for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
     
-    fprintf(['Image ', num2str(i), ' of ', num2str(info.imagegoto(imageset)), '\n']);
+    fprintf(['Image ', num2str(i), ' of ', num2str(expt.info.imagegoto(imageset)), '\n']);
     
     % Load the image (images are likely 12 to 14-bit prior to FAD correction)
-    inimage = double(ReadFile(experiment.read,info.image{imageset},info.imagestart{imageset},info.imageformat{imageset}, info.imagegoto(imageset), i));
+    inimage = double(ReadFile(expt.file.raw,expt.info.image{imageset},expt.info.imagestart{imageset},expt.info.imageformat{imageset}, expt.info.imagegoto(imageset), i));
     
     % Perform the flat / dark correction
     final = (inimage - dark) ./ (flat - dark);    
@@ -37,27 +37,27 @@ for i = info.imagegofrom(imageset):info.imagegoto(imageset),
     final(isinf(final)) = 1;
 
     % Rotate the output image
-    final = imrotate(final,experiment.rotation);
+    final = imrotate(final,expt.fad.rotation);
     
     % Crop the image
-    if isfield(experiment,'crop')
-        final = final(experiment.crop(2):experiment.crop(4),experiment.crop(1):experiment.crop(3));
+    if isfield(expt.fad,'crop')
+        final = final(expt.fad.crop(2):expt.fad.crop(4),expt.fad.crop(1):expt.fad.crop(3));
     end
     
     % Filter image to remove beam movement
     final = EvenOutImage(final);
 
     % Create and save the high quality version (NOTE: the images are now 16-bit, not the original dynamic range)
-    if strcmp(experiment.output, 'HIGH') | strcmp(experiment.output, 'BOTH')
+    if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
         SixteenBitImage = uint16(final * 65535);
-        high = sprintf('%s%s%s%s%s%.4d%s',experiment.write,info.image{imageset},experiment.FAD_path_high,info.imagestart{imageset},experiment.FAD_file_high,i,experiment.FAD_type_high);
+        high = sprintf('%s%s%s%s%s%.4d%s',expt.file.corrected,expt.info.image{imageset},expt.fad.FAD_path_high,expt.info.imagestart{imageset},expt.fad.FAD_file_high,i,expt.fad.FAD_type_high);
         imwrite(SixteenBitImage, high);
     end
     
     % Create and save the low quality version
-    if strcmp(experiment.output, 'LOW') | strcmp(experiment.output, 'BOTH')
+    if strcmp(expt.fad.output, 'LOW') | strcmp(expt.fad.output, 'BOTH')
         EightBitImage = uint8(final * 256);
-        low = sprintf('%s%s%s%s%s%.4d%s',experiment.write,info.image{imageset},experiment.FAD_path_low,info.imagestart{imageset},experiment.FAD_file_low,i,experiment.FAD_type_low);
+        low = sprintf('%s%s%s%s%s%.4d%s',expt.file.corrected,expt.info.image{imageset},expt.fad.FAD_path_low,expt.info.imagestart{imageset},expt.fad.FAD_file_low,i,expt.fad.FAD_type_low);
         imwrite(EightBitImage, low);
     end
     

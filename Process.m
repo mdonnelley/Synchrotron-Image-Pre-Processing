@@ -1,4 +1,4 @@
-function Process(experiment, info)
+function Process(experiment)
 
 %
 %**********************************************************
@@ -6,24 +6,32 @@ function Process(experiment, info)
 %
 % Written by: Martin Donnelley
 % Date: 16/4/2010
-% Last updated: 29/04/2011
+% Last updated: 29/09/2014
 %
 %******************************************************
 %
 
+% Load the metadata from the dataset to analyse
+eval(experiment);
+
+% Load the info
+expt.info = ReadS8Data(expt.file.filelist);
+
 % Process each experiment
-for imageset = experiment.runlist,
+for imageset = expt.fad.runlist,
     
     start = now;
     
-    fprintf('Processing imageset %d of %d\n', imageset, length(info.image));
+    fprintf('Processing imageset %d of %d\n', imageset, length(expt.info.image));
     
     % Load or average all of the flat and dark files
-    [flat, dark] = AverageFlatDark(info, experiment, imageset);
+    [flat, dark] = AverageFlatDark(expt, imageset);
     
     % Perform the correction
-    FlatDarkCorrect(experiment, info, imageset, flat, dark);
+    FlatDarkCorrect(expt, imageset, flat, dark);
     
     disp(['Total processing time was ', datestr(now - start,'HH:MM:SS:FFF')])
     
 end
+
+if(ispc && isfield(expt.file,'movies')), VirtualDub(expt.info); end
