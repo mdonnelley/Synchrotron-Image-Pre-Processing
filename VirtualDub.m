@@ -25,21 +25,21 @@ FRAMERATE = 5;              % Set output FRAMERATE
 COMPRESSION = 'Cinepak';
 
 % Check destination directory exists
-mkdir(experiment.movies);
+mkdir(expt.file.movies);
 
 % Write job list to a file
-fid = fopen([experiment.write,VD_JOB_FILE], 'wt');
+fid = fopen([expt.file.movies,VD_JOB_FILE], 'wt');
 
 % Write the file header
-fprintf(fid, '// $numjobs %d\n\n', length(experiment.runlist));
+fprintf(fid, '// $numjobs %d\n\n', length(expt.file.runlist));
 
 % Add each job to the list
-for jobnumber = 1:length(experiment.runlist);
+for jobnumber = 1:length(expt.file.runlist);
 
     % Determine the file information
-	input = sprintf('%s%s%s%s%s%.4d%s',experiment.write,info.image{experiment.runlist(jobnumber)},IMAGESET,info.imagestart{experiment.runlist(jobnumber)},FILENAME,info.imagegofrom(experiment.runlist(jobnumber)),FILETYPE);
-    output = sprintf('%s%s%.4d.avi',experiment.movies,info.imagestart{experiment.runlist(jobnumber)},info.imagegofrom(experiment.runlist(jobnumber)));
-    frames = info.imagegoto(experiment.runlist(jobnumber)) - info.imagegofrom(experiment.runlist(jobnumber));
+	input = sprintf('%s%s%s%s%s%.4d%s',expt.file.corrected,info.image{expt.file.runlist(jobnumber)},IMAGESET,expt.info.imagestart{expt.file.runlist(jobnumber)},FILENAME,expt.info.imagegofrom(expt.file.runlist(jobnumber)),FILETYPE);
+    output = sprintf('%s%s%.4d.avi',expt.file.movies,expt.info.imagestart{expt.file.runlist(jobnumber)},expt.info.imagegofrom(expt.file.runlist(jobnumber)));
+    frames = info.imagegoto(expt.file.runlist(jobnumber)) - expt.info.imagegofrom(expt.file.runlist(jobnumber));
 
     % Write the job information
     fprintf(fid, '// $job "Job %d"\n', jobnumber);
@@ -79,5 +79,5 @@ fprintf(fid, '// $done\n');
 fclose(fid);
 
 % Run the VirtualDub job
-VDrun = ['!"',VD_LOCATION,'" /s"',[experiment.write,VD_JOB_FILE],'" &'];
+VDrun = ['!"',VD_LOCATION,'" /s"',[expt.file.movies,VD_JOB_FILE],'" &'];
 eval(VDrun);
