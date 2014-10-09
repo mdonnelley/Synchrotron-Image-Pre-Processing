@@ -12,7 +12,7 @@ function Process(experiment)
 %
 
 % Load the metadata from the dataset to analyse
-eval(experiment);
+run(experiment);
 
 % Load the info
 expt.info = ReadS8Data(expt.file.filelist);
@@ -34,4 +34,4 @@ for imageset = expt.fad.runlist,
     
 end
 
-if(ispc && isfield(expt.file,'movies')), VirtualDub(expt.info); end
+if(ispc && isfield(expt.fad,'movies')), VirtualDub(expt.info); end

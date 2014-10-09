@@ -10,10 +10,8 @@ function VirtualDub(experiment, info)
 %******************************************************
 %
 
-% Set input file information
-IMAGESET = 'Low/';
-FILENAME = 'fad_';
-FILETYPE = '.jpg';
+% Set the base pathname for the current machine
+setbasepath;
 
 % Set file defaults
 VD_LOCATION = 'C:\Program Files (x86)\VirtualDub-1.10.4\VirtualDub.exe';
@@ -25,10 +23,10 @@ FRAMERATE = 5;              % Set output FRAMERATE
 COMPRESSION = 'Cinepak';
 
 % Check destination directory exists
-mkdir(expt.file.movies);
+mkdir([basepath,expt.fad.movies]);
 
 % Write job list to a file
-fid = fopen([expt.file.movies,VD_JOB_FILE], 'wt');
+fid = fopen([[basepath,expt.fad.movies],VD_JOB_FILE], 'wt');
 
 % Write the file header
 fprintf(fid, '// $numjobs %d\n\n', length(expt.file.runlist));
@@ -37,8 +35,20 @@ fprintf(fid, '// $numjobs %d\n\n', length(expt.file.runlist));
 for jobnumber = 1:length(expt.file.runlist);
 
     % Determine the file information
-	input = sprintf('%s%s%s%s%s%.4d%s',expt.file.corrected,info.image{expt.file.runlist(jobnumber)},IMAGESET,expt.info.imagestart{expt.file.runlist(jobnumber)},FILENAME,expt.info.imagegofrom(expt.file.runlist(jobnumber)),FILETYPE);
-    output = sprintf('%s%s%.4d.avi',expt.file.movies,expt.info.imagestart{expt.file.runlist(jobnumber)},expt.info.imagegofrom(expt.file.runlist(jobnumber)));
+	input = sprintf('%s%s%s%s%s%.4d%s',...
+        [basepath,expt.file.corrected],...
+        info.image{expt.file.runlist(jobnumber)},...
+        expt.fad.FAD_path_low,...
+        expt.info.imagestart{expt.file.runlist(jobnumber)},...
+        expt.fad.FAD_file_low,...
+        expt.info.imagegofrom(expt.file.runlist(jobnumber)),...
+        expt.fad.FAD_type_low);
+    
+    output = sprintf('%s%s%.4d.avi',...
+        [basepath,expt.fad.movies],...
+        expt.info.imagestart{expt.file.runlist(jobnumber)},...
+        expt.info.imagegofrom(expt.file.runlist(jobnumber)));
+    
     frames = info.imagegoto(expt.file.runlist(jobnumber)) - expt.info.imagegofrom(expt.file.runlist(jobnumber));
 
     % Write the job information
@@ -79,5 +89,5 @@ fprintf(fid, '// $done\n');
 fclose(fid);
 
 % Run the VirtualDub job
-VDrun = ['!"',VD_LOCATION,'" /s"',[expt.file.movies,VD_JOB_FILE],'" &'];
+VDrun = ['!"',VD_LOCATION,'" /s"',[[basepath,expt.fad.movies],VD_JOB_FILE],'" &'];
 eval(VDrun);
