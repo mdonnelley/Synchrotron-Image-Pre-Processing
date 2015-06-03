@@ -38,17 +38,16 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
     final = (inimage - dark) ./ (flat - dark);    
     final(isnan(final)) = 0;
     final(isinf(final)) = 1;
-
-    % Rotate the output image
-    final = imrotate(final,expt.fad.rotation);
-    
-    % Crop the image
-    if isfield(expt.fad,'crop')
-        final = final(expt.fad.crop(2):expt.fad.crop(4),expt.fad.crop(1):expt.fad.crop(3));
-    end
     
     % Filter image to remove beam movement
-    final = EvenOutImage(final);
+    if isfield(expt.fad,'filter') if(expt.fad.filter) final = EvenOutImage(final); end; end
+    
+    % Rotate, flip and crop the output image and adjust contrast
+    if isfield(expt.fad,'rotation') final = imrotate(final,expt.fad.rotation); end
+    if isfield(expt.fad,'flipud') if(expt.fad.flipud) final = flipud(final); end; end
+    if isfield(expt.fad,'fliplr') if(expt.fad.fliplr) final = fliplr(final); end; end
+    if isfield(expt.fad,'crop') final = final(expt.fad.crop(2):expt.fad.crop(4),expt.fad.crop(1):expt.fad.crop(3)); end
+    if isfield(expt.fad,'adjust')   final = imadjust(final,expt.fad.adjust); end
 
     % Create and save the high quality version (NOTE: the images are now 16-bit, not the original dynamic range)
     if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
