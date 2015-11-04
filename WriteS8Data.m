@@ -37,7 +37,7 @@ for i = 3:length(date_list)
                     flatstart = image_list(1).name;
                     flatstart = flatstart(1:length(flatstart)-8);
                     flatgofrom = image_list(1).name;
-                    flatgofrom = str2num(flatstart(length(flatstart)-7:length(flatstart)-4));
+                    flatgofrom = str2num(flatgofrom(length(flatgofrom)-7:length(flatgofrom)-4));
                     flatgoto = image_list(length(image_list)).name;
                     flatgoto = str2num(flatgoto(length(flatgoto)-7:length(flatgoto)-4));
                     
@@ -65,11 +65,11 @@ for i = 3:length(date_list)
                     darkgoto = str2num(darkgoto(length(darkgoto)-7:length(darkgoto)-4));
                     
                     % Add the data to the sheet
-                    data{row,6} = dark;
-                    data{row,7} = darkstart;
-                    data{row,8} = darkgofrom;
-                    data{row,9} = darkgoto;
-                    data{row,10} = expt.file.type;
+                    data{row,11} = dark;
+                    data{row,12} = darkstart;
+                    data{row,13} = darkgofrom;
+                    data{row,14} = darkgoto;
+                    data{row,15} = expt.file.type;
                     
                 end
                 
