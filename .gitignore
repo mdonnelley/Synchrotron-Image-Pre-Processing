@@ -14,6 +14,9 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+# Matlab temp files
+*.asv
+
 # =========================
 # Operating System Files
 # =========================

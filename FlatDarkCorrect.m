@@ -32,7 +32,7 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
     fprintf(['Image ', num2str(i), ' of ', num2str(expt.info.imagegoto(imageset)), '\n']);
     
     % Load the image (images are likely 12 to 14-bit prior to FAD correction)
-    inimage = double(ReadFile([basepath,expt.file.raw],expt.info.image{imageset},expt.info.imagestart{imageset},expt.info.imageformat{imageset}, expt.info.imagegoto(imageset), i));
+    inimage = double(ReadFile([basepath,expt.file.raw],expt.info.image{imageset},expt.info.imagestart{imageset},expt.info.imageformat{imageset}, 4, i));
     
     % Perform the flat / dark correction
     final = (inimage - dark) ./ (flat - dark);    

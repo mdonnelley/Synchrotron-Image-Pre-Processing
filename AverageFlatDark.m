@@ -32,7 +32,7 @@ else
     for i = expt.info.flatgofrom(imageset):expt.info.flatgoto(imageset),
         
         fprintf(['Loading flat file ', num2str(i), ' of ', num2str(expt.info.flatgoto(imageset)), '\n']);
-        inimage = ReadFile([basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset},expt.info.flatformat{imageset}, expt.info.flatgoto(imageset), i);
+        inimage = ReadFile([basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset},expt.info.flatformat{imageset}, 4, i);
         flat = flat + double(inimage) / (expt.info.flatgoto(imageset) - expt.info.flatgofrom(imageset) + 1);
         
     end
@@ -62,7 +62,7 @@ else
     for i = expt.info.darkgofrom(imageset):expt.info.darkgoto(imageset),
         
         fprintf(['Loading dark file ', num2str(i), ' of ', num2str(expt.info.darkgoto(imageset)), '\n']);
-        inimage = ReadFile([basepath,expt.file.raw], expt.info.dark{imageset}, expt.info.darkstart{imageset},expt.info.darkformat{imageset}, expt.info.darkgoto(imageset), i);
+        inimage = ReadFile([basepath,expt.file.raw], expt.info.dark{imageset}, expt.info.darkstart{imageset},expt.info.darkformat{imageset}, 4, i);
         dark = dark + double(inimage) / (expt.info.darkgoto(imageset) - expt.info.darkgofrom(imageset) + 1);
         
     end

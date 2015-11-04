@@ -1,4 +1,4 @@
-function image = ReadFile(filepath, base, start, format, i_end, i)
+function image = ReadFile(filepath, base, start, format, magnitude, i)
 
 %
 %**********************************************************
@@ -14,15 +14,8 @@ function image = ReadFile(filepath, base, start, format, i_end, i)
 %% Single page TIFF or IMG
 
 % Get the filename
-% if(i_end<10)     current = sprintf('%s%s%s%.1d%s',filepath,base,start,i,format);    end
-% if(i_end>9)      current = sprintf('%s%s%s%.2d%s',filepath,base,start,i,format);    end
-% if(i_end>99)     current = sprintf('%s%s%s%.3d%s',filepath,base,start,i,format);    end
-% if(i_end>999)    current = sprintf('%s%s%s%.4d%s',filepath,base,start,i,format);    end
-% if(i_end>9999)   current = sprintf('%s%s%s%.5d%s',filepath,base,start,i,format);    end
-% if(i_end>99999)  current = sprintf('%s%s%s%.6d%s',filepath,base,start,i,format);    end
-% if(i_end>999999) current = sprintf('%s%s%s%.7d%s',filepath,base,start,i,format);    end
-
-current = sprintf('%s%s%s%.4d%s',filepath,base,start,i,format) %%ADDED FOR 2012A ONWARDS DATA!!!!
+formatSpec = ['%s%s%s%.',num2str(magnitude),'d%s'];
+current = sprintf(formatSpec,filepath,base,start,i,format);
 
 % Load the image
 if(exist(current)),
