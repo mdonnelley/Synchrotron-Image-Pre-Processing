@@ -18,12 +18,13 @@ fprintf('Read directory %s%s\n', [basepath,expt.file.raw], expt.info.image{image
 fprintf('Write directory %s%s\n', [basepath,expt.fad.corrected], expt.info.image{imageset});
 
 % Check destination directories exists
+current_dir = [basepath,expt.fad.corrected,expt.info.image{imageset}];
 if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
-    mkdir([[basepath,expt.fad.corrected],expt.info.image{imageset},expt.fad.FAD_path_high]);
+    mkdir([current_dir,expt.fad.FAD_path_high]);
 end
 
 if strcmp(expt.fad.output, 'LOW') | strcmp(expt.fad.output, 'BOTH')
-    mkdir([[basepath,expt.fad.corrected],expt.info.image{imageset},expt.fad.FAD_path_low]);
+    mkdir([current_dir,expt.fad.FAD_path_low]);
 end
 
 % Perform the correction
@@ -52,14 +53,14 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
     % Create and save the high quality version (NOTE: the images are now 16-bit, not the original dynamic range)
     if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
         SixteenBitImage = uint16(final * 65535);
-        high = sprintf('%s%s%s%s%s%.4d%s',[basepath,expt.fad.corrected],expt.info.image{imageset},expt.fad.FAD_path_high,expt.info.imagestart{imageset},expt.fad.FAD_file_high,i,expt.fad.FAD_type_high);
+        high = sprintf('%s%s%s%s%.4d%s',current_dir,expt.fad.FAD_path_high,expt.info.imagestart{imageset},expt.fad.FAD_file_high,i,expt.fad.FAD_type_high);
         imwrite(SixteenBitImage, high);
     end
     
     % Create and save the low quality version
     if strcmp(expt.fad.output, 'LOW') | strcmp(expt.fad.output, 'BOTH')
         EightBitImage = uint8(final * 256);
-        low = sprintf('%s%s%s%s%s%.4d%s',[basepath,expt.fad.corrected],expt.info.image{imageset},expt.fad.FAD_path_low,expt.info.imagestart{imageset},expt.fad.FAD_file_low,i,expt.fad.FAD_type_low);
+        low = sprintf('%s%s%s%s%.4d%s',current_dir,expt.fad.FAD_path_low,expt.info.imagestart{imageset},expt.fad.FAD_file_low,i,expt.fad.FAD_type_low);
         imwrite(EightBitImage, low);
     end
     

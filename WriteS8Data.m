@@ -1,4 +1,7 @@
-%function data = WriteS8Data
+% Script to produce an file list of all files acquired during a beamtime
+%
+% S8_15B_XU
+% WriteS8Data 
 
 row = 1;
 clear data
@@ -17,18 +20,18 @@ for i = 3:length(date_list)
         
         % Get the list of animals in the folder
         animal_dir = date_list(i).name;
-        animal_list = dir([date_dir,animal_dir,'/',expt.file.folder_prefix,'*']);
+        animal_list = dir([date_dir,animal_dir,'/',expt.naming.folder_prefix,'*']);
         
         % Check each animal folder
         for j = 1:length(animal_list),
             
-            if animal_list(i).isdir,
+            if animal_list(j).isdir,
                 
                 % Get the list of images
                 image_dir = animal_list(j).name;
                 
                 %% Check if there are flat files present
-                image_list = dir([date_dir,animal_dir,'/',image_dir,'/*',expt.file.flat_prefix,'*',expt.file.type]);
+                image_list = dir([date_dir,animal_dir,'/',image_dir,'/*',expt.naming.flat_prefix,'*',expt.naming.type]);
                 
                 if ~isempty(image_list),
                     
@@ -46,12 +49,12 @@ for i = 3:length(date_list)
                     data{row,7} = flatstart;
                     data{row,8} = flatgofrom;
                     data{row,9} = flatgoto;
-                    data{row,10} = expt.file.type;
+                    data{row,10} = expt.naming.type;
                     
                 end
                 
                 %% Check if there are dark files present
-                image_list = dir([date_dir,animal_dir,'/',image_dir,'/*',expt.file.dark_prefix,'*',expt.file.type]);
+                image_list = dir([date_dir,animal_dir,'/',image_dir,'/*',expt.naming.dark_prefix,'*',expt.naming.type]);
                 
                 if ~isempty(image_list),
                     
@@ -69,25 +72,25 @@ for i = 3:length(date_list)
                     data{row,12} = darkstart;
                     data{row,13} = darkgofrom;
                     data{row,14} = darkgoto;
-                    data{row,15} = expt.file.type;
+                    data{row,15} = expt.naming.type;
                     
                 end
                 
-                %% Get the list of all experiment files with the expt.file.file_prefix
-                image_list = dir([date_dir,animal_dir,'/',image_dir,'/',expt.file.file_prefix,'*',expt.file.run_prefix,'*',expt.file.type]);
+                %% Get the list of all experiment files with the expt.naming.file_prefix
+                image_list = dir([date_dir,animal_dir,'/',image_dir,'/',expt.naming.file_prefix,'*',expt.naming.run_prefix,'*',expt.naming.type]);
                 
                 if ~isempty(image_list),
                     
                     % Determine the number of runs
-                    pos = strfind(image_list(length(image_list)).name,expt.file.run_prefix);
+                    pos = strfind(image_list(length(image_list)).name,expt.naming.run_prefix);
                     runs = str2num(image_list(length(image_list)).name(pos+2:pos+3));
                     
                     % Check the number of images for each run
                     for k = 1:runs
                         
                         % Get the list of files for the run
-                        run_dir = sprintf('%s%s%.2d_',image_list(length(image_list)).name(1:pos-1),expt.file.run_prefix,k);
-                        run_list = dir([date_dir,animal_dir,'/',image_dir,'/',run_dir,'*',expt.file.type]);
+                        run_dir = sprintf('%s%s%.2d_',image_list(length(image_list)).name(1:pos-1),expt.naming.run_prefix,k);
+                        run_list = dir([date_dir,animal_dir,'/',image_dir,'/',run_dir,'*',expt.naming.type]);
                         
                         % Determine the data for the spreadsheet
                         image = [animal_dir,'/',image_dir,'/'];
@@ -102,7 +105,7 @@ for i = 3:length(date_list)
                         data{row,2} = imagestart;
                         data{row,3} = imagegofrom;
                         data{row,4} = imagegoto;
-                        data{row,5} = expt.file.type;
+                        data{row,5} = expt.naming.type;
                         
                         % Display the current dataset then increment the row counter
                         data(row,:)
