@@ -80,4 +80,4 @@ end
 
 %% Otherwise
 
-error('File / Image does not exist');
+error(['File / Image: ',current,' does not exist']);

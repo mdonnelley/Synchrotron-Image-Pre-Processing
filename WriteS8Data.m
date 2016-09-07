@@ -1,7 +1,10 @@
 % Script to produce an file list of all files acquired during a beamtime
 %
+% setbasepath
 % S8_15B_XU
-% WriteS8Data 
+% WriteS8Data
+
+if isfield(expt.naming,'zeropad') zeropad = expt.naming.zeropad; else zeropad = 4; end
 
 row = 1;
 clear data
@@ -38,11 +41,11 @@ for i = 3:length(date_list)
                     % Determine the data for the spreadsheet
                     flat = [animal_dir,'/',image_dir,'/'];
                     flatstart = image_list(1).name;
-                    flatstart = flatstart(1:length(flatstart)-8);
+                    flatstart = flatstart(1:length(flatstart)-zeropad-4);
                     flatgofrom = image_list(1).name;
-                    flatgofrom = str2num(flatgofrom(length(flatgofrom)-7:length(flatgofrom)-4));
+                    flatgofrom = str2num(flatgofrom(length(flatgofrom)-zeropad-3:length(flatgofrom)-4));
                     flatgoto = image_list(length(image_list)).name;
-                    flatgoto = str2num(flatgoto(length(flatgoto)-7:length(flatgoto)-4));
+                    flatgoto = str2num(flatgoto(length(flatgoto)-zeropad-3:length(flatgoto)-4));
                     
                     % Add the data to the sheet
                     data{row,6} = flat;
@@ -61,11 +64,11 @@ for i = 3:length(date_list)
                     % Determine the data for the spreadsheet
                     dark = [animal_dir,'/',image_dir,'/'];
                     darkstart = image_list(1).name;
-                    darkstart = darkstart(1:length(darkstart)-8);
+                    darkstart = darkstart(1:length(darkstart)-zeropad-4);
                     darkgofrom = image_list(1).name;
-                    darkgofrom = str2num(darkgofrom(length(darkgofrom)-7:length(darkgofrom)-4));
+                    darkgofrom = str2num(darkgofrom(length(darkgofrom)-zeropad-3:length(darkgofrom)-4));
                     darkgoto = image_list(length(image_list)).name;
-                    darkgoto = str2num(darkgoto(length(darkgoto)-7:length(darkgoto)-4));
+                    darkgoto = str2num(darkgoto(length(darkgoto)-zeropad-3:length(darkgoto)-4));
                     
                     % Add the data to the sheet
                     data{row,11} = dark;
@@ -92,24 +95,28 @@ for i = 3:length(date_list)
                         run_dir = sprintf('%s%s%.2d_',image_list(length(image_list)).name(1:pos-1),expt.naming.run_prefix,k);
                         run_list = dir([date_dir,animal_dir,'/',image_dir,'/',run_dir,'*',expt.naming.type]);
                         
-                        % Determine the data for the spreadsheet
-                        image = [animal_dir,'/',image_dir,'/'];
-                        imagestart = run_dir;
-                        imagegofrom = run_list(1).name;
-                        imagegofrom = str2num(imagegofrom(length(imagegofrom)-7:length(imagegofrom)-4));
-                        imagegoto = run_list(length(run_list)).name;
-                        imagegoto = str2num(imagegoto(length(imagegoto)-7:length(imagegoto)-4));
+                        if ~isempty(run_list),
                         
-                        % Add the data to the sheet
-                        data{row,1} = image;
-                        data{row,2} = imagestart;
-                        data{row,3} = imagegofrom;
-                        data{row,4} = imagegoto;
-                        data{row,5} = expt.naming.type;
+                            % Determine the data for the spreadsheet
+                            image = [animal_dir,'/',image_dir,'/'];
+                            imagestart = run_dir;
+                            imagegofrom = run_list(1).name;
+                            imagegofrom = str2num(imagegofrom(length(imagegofrom)-zeropad-3:length(imagegofrom)-4));
+                            imagegoto = run_list(length(run_list)).name;
+                            imagegoto = str2num(imagegoto(length(imagegoto)-zeropad-3:length(imagegoto)-4));
+
+                            % Add the data to the sheet
+                            data{row,1} = image;
+                            data{row,2} = imagestart;
+                            data{row,3} = imagegofrom;
+                            data{row,4} = imagegoto;
+                            data{row,5} = expt.naming.type;
+
+                            % Display the current dataset then increment the row counter
+                            data(row,:)
+                            row = row + 1;
                         
-                        % Display the current dataset then increment the row counter
-                        data(row,:)
-                        row = row + 1;
+                        end
                         
                     end
                     

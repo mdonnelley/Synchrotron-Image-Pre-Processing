@@ -13,6 +13,7 @@ function [flat, dark] = AverageFlatDark(expt, imageset)
 
 % Set the base pathname for the current machine
 setbasepath;
+if isfield(expt.naming,'zeropad') zeropad = expt.naming.zeropad; else zeropad = 4; end
 
 %% Load and average all of the flat files
 matfile = [[basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset}, num2str(expt.info.flatgofrom(imageset)), '-', num2str(expt.info.flatgoto(imageset)),'.mat'];
@@ -32,7 +33,7 @@ else
     for i = expt.info.flatgofrom(imageset):expt.info.flatgoto(imageset),
         
         fprintf(['Loading flat file ', num2str(i), ' of ', num2str(expt.info.flatgoto(imageset)), '\n']);
-        inimage = ReadFile([basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset},expt.info.flatformat{imageset}, 4, i);
+        inimage = ReadFile([basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset},expt.info.flatformat{imageset}, zeropad, i);
         flat = flat + double(inimage) / (expt.info.flatgoto(imageset) - expt.info.flatgofrom(imageset) + 1);
         
     end
@@ -62,7 +63,7 @@ else
     for i = expt.info.darkgofrom(imageset):expt.info.darkgoto(imageset),
         
         fprintf(['Loading dark file ', num2str(i), ' of ', num2str(expt.info.darkgoto(imageset)), '\n']);
-        inimage = ReadFile([basepath,expt.file.raw], expt.info.dark{imageset}, expt.info.darkstart{imageset},expt.info.darkformat{imageset}, 4, i);
+        inimage = ReadFile([basepath,expt.file.raw], expt.info.dark{imageset}, expt.info.darkstart{imageset},expt.info.darkformat{imageset}, zeropad, i);
         dark = dark + double(inimage) / (expt.info.darkgoto(imageset) - expt.info.darkgofrom(imageset) + 1);
         
     end
