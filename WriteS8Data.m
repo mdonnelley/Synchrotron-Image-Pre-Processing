@@ -23,6 +23,7 @@ for i = 3:length(date_list)
         
         % Get the list of animals in the folder
         animal_dir = date_list(i).name;
+        [date_dir,animal_dir,'/',expt.naming.folder_prefix,'*'];
         animal_list = dir([date_dir,animal_dir,'/',expt.naming.folder_prefix,'*']);
         
         % Check each animal folder
@@ -32,6 +33,11 @@ for i = 3:length(date_list)
                 
                 % Get the list of images
                 image_dir = animal_list(j).name;
+                
+%                 % Alter the zeropad if required
+%                 folder = [date_dir,animal_dir,'/',image_dir,'/'];
+%                 filelist = dir([folder,expt.naming.file_prefix,'*',expt.naming.type]);
+%                 FixZeropad([date_dir,animal_dir,'/',image_dir,'/'],filelist,zeropad)
                 
                 %% Check if there are flat files present
                 image_list = dir([date_dir,animal_dir,'/',image_dir,'/*',expt.naming.flat_prefix,'*',expt.naming.type]);
@@ -86,13 +92,13 @@ for i = 3:length(date_list)
                     
                     % Determine the number of runs
                     pos = strfind(image_list(length(image_list)).name,expt.naming.run_prefix);
-                    runs = str2num(image_list(length(image_list)).name(pos+2:pos+3));
+                    runs = str2num(image_list(length(image_list)).name(max(pos)+2:max(pos)+3));
                     
                     % Check the number of images for each run
                     for k = 1:runs
                         
                         % Get the list of files for the run
-                        run_dir = sprintf('%s%s%.2d_',image_list(length(image_list)).name(1:pos-1),expt.naming.run_prefix,k);
+                        run_dir = sprintf('%s%s%.2d_',image_list(length(image_list)).name(1:max(pos)-1),expt.naming.run_prefix,k);
                         run_list = dir([date_dir,animal_dir,'/',image_dir,'/',run_dir,'*',expt.naming.type]);
                         
                         if ~isempty(run_list),

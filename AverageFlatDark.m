@@ -19,12 +19,12 @@ if isfield(expt.naming,'zeropad') zeropad = expt.naming.zeropad; else zeropad = 
 matfile = [[basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset}, num2str(expt.info.flatgofrom(imageset)), '-', num2str(expt.info.flatgoto(imageset)),'.mat'];
 
 % If the flat files already exist
-if(exist(matfile, 'file')),   
+if(exist(matfile, 'file')),
     
     fprintf('Loading averaged flat file %s\n', matfile);
     load(matfile,'flat');
-
-% If the flat files must be created
+    
+    % If the flat files must be created
 else
     
     fprintf('Processing flat files %s%s\n', [basepath,expt.file.raw], expt.info.flat{imageset});
@@ -33,11 +33,19 @@ else
     for i = expt.info.flatgofrom(imageset):expt.info.flatgoto(imageset),
         
         fprintf(['Loading flat file ', num2str(i), ' of ', num2str(expt.info.flatgoto(imageset)), '\n']);
-        inimage = ReadFile([basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset},expt.info.flatformat{imageset}, zeropad, i);
-        flat = flat + double(inimage) / (expt.info.flatgoto(imageset) - expt.info.flatgofrom(imageset) + 1);
+        imagename = [basepath,...
+            expt.file.raw,...
+            expt.info.flat{imageset},...
+            expt.info.flatstart{imageset},...
+            sprintf(['%.',num2str(zeropad),'d'],i),...
+            expt.info.flatformat{imageset}];
+        inimage = double(imread(imagename));
+        flat = flat + inimage / (expt.info.flatgoto(imageset) - expt.info.flatgofrom(imageset) + 1);
+%         inimage = ReadFile([basepath,expt.file.raw], expt.info.flat{imageset}, expt.info.flatstart{imageset},expt.info.flatformat{imageset}, zeropad, i);
+%         flat = flat + double(inimage) / (expt.info.flatgoto(imageset) - expt.info.flatgofrom(imageset) + 1);
         
     end
-
+    
     fprintf('Flat image is %.1f bits\n', log2(max(max(flat))));
     fprintf('Saving averaged flat file %s\n', matfile);
     save(matfile,'flat');
@@ -50,11 +58,11 @@ matfile = [[basepath,expt.file.raw], expt.info.dark{imageset}, expt.info.darksta
 
 % If the dark files already exist
 if(exist(matfile, 'file')),
-
+    
     fprintf('Loading averaged dark file %s\n', matfile);
     load(matfile,'dark');
-
-% If the dark files must be created
+    
+    % If the dark files must be created
 else
     
     fprintf('Processing dark files %s%s\n', [basepath,expt.file.raw], expt.info.dark{imageset});
@@ -63,8 +71,16 @@ else
     for i = expt.info.darkgofrom(imageset):expt.info.darkgoto(imageset),
         
         fprintf(['Loading dark file ', num2str(i), ' of ', num2str(expt.info.darkgoto(imageset)), '\n']);
-        inimage = ReadFile([basepath,expt.file.raw], expt.info.dark{imageset}, expt.info.darkstart{imageset},expt.info.darkformat{imageset}, zeropad, i);
-        dark = dark + double(inimage) / (expt.info.darkgoto(imageset) - expt.info.darkgofrom(imageset) + 1);
+        imagename = [basepath,...
+            expt.file.raw,...
+            expt.info.dark{imageset},...
+            expt.info.darkstart{imageset},...
+            sprintf(['%.',num2str(zeropad),'d'],i),...
+            expt.info.darkformat{imageset}];
+        inimage = double(imread(imagename));
+        dark = dark + inimage / (expt.info.darkgoto(imageset) - expt.info.darkgofrom(imageset) + 1);
+%         inimage = ReadFile([basepath,expt.file.raw], expt.info.dark{imageset}, expt.info.darkstart{imageset},expt.info.darkformat{imageset}, zeropad, i);
+%         dark = dark + double(inimage) / (expt.info.darkgoto(imageset) - expt.info.darkgofrom(imageset) + 1);
         
     end
     

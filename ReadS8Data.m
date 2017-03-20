@@ -44,7 +44,7 @@ function info = ReadS8Data(data)
 %% XLSX
 
 % Read the data file
-[num,txt]=xlsread(data,'','','basic');
+[num,txt] = xlsread(data,'','','basic');
 
 % Convert to a matlab cell array
 info.image = txt(:,1);
@@ -64,3 +64,6 @@ info.darkstart = txt(:,12);
 info.darkgofrom = num(:,11);
 info.darkgoto = num(:,12);
 info.darkformat = txt(:,15);
+
+% Added for AS-2016-2 data to identify the first image in the breath
+if size(num,2) == 14, info.startimage = num(:,14); end
