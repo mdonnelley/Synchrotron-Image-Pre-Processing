@@ -54,6 +54,15 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
         % Filter image to remove beam movement
         if isfield(expt.fad,'filter') if(expt.fad.filter) final = EvenOutImage(final); end; end
         
+        % Anisotropic diffusion to remove noise
+        if isfield(expt.fad,'anisodiff')
+            num_iter = expt.fad.anisodiff;
+            delta_t = 1/7;
+            kappa = 30;
+            option = 2;
+            final = anisodiff2D(final,num_iter,delta_t,kappa,option);
+        end
+        
         % Rotate, flip and adjust contrast
         if isfield(expt.fad,'rotation') final = imrotate(final,expt.fad.rotation); end
         if isfield(expt.fad,'flipud') if expt.fad.flipud, final = flipud(final); end; end
@@ -81,8 +90,6 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
     % Create and save the high quality version (NOTE: the images are now 16-bit, not the original dynamic range)
     if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
         SixteenBitImage = uint16(final * 65535); 
-%         formatSpec = ['%s%s%s%s%.',num2str(zeropad),'d%s'];
-%         high = sprintf(formatSpec,current_dir,expt.fad.FAD_path_high,expt.info.imagestart{imageset},expt.fad.FAD_file_high,i,expt.fad.FAD_type_high);
         high = [current_dir,...
             expt.fad.FAD_path_high,...
             expt.info.imagestart{imageset},...
@@ -95,8 +102,6 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
     % Create and save the low quality version
     if strcmp(expt.fad.output, 'LOW') | strcmp(expt.fad.output, 'BOTH')
         EightBitImage = uint8(final * 256);
-%         formatSpec = ['%s%s%s%s%.',num2str(zeropad),'d%s'];
-%         low = sprintf(formatSpec,current_dir,expt.fad.FAD_path_low,expt.info.imagestart{imageset},expt.fad.FAD_file_low,i,expt.fad.FAD_type_low);
         low = [current_dir,...
             expt.fad.FAD_path_low,...
             expt.info.imagestart{imageset},...
