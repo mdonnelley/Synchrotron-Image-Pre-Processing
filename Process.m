@@ -11,11 +11,16 @@ function Process(experiment)
 %******************************************************
 %
 
+setbasepath
+
 % Load the metadata from the dataset to analyse
 run(experiment);
 
 % Load the info
 expt.info = ReadS8Data(expt.file.filelist);
+
+% Set the movie parameters
+framerate = 5;
 
 % Process each experiment
 for imageset = expt.fad.runlist,
@@ -30,8 +35,28 @@ for imageset = expt.fad.runlist,
     % Perform the correction
     FlatDarkCorrect(expt, imageset, flat, dark);
     
-    disp(['Total processing time was ', datestr(now - start,'HH:MM:SS:FFF')])
+    % Create movie of FD corrected images
+    if ispc && isfield(expt.fad,'movies'),
+        
+        % Get the input file list
+        infiles = dir([basepath,...
+            expt.fad.corrected,...
+            expt.info.image{imageset},...
+            expt.fad.FAD_path_low,...
+            expt.info.imagestart{imageset},'*']);
+        
+        % Get the output folder and filename
+        outfolder = [basepath,...
+            expt.fad.movies];
+        if ~exist(outfolder), mkdir(outfolder); end
+        outfile = [outfolder,...
+            expt.info.imagestart{imageset},...
+            'mov'];
+        
+        Create_Video(infiles,outfile,framerate);
+    
+    end
+    
+    disp(['Processing time for this imageset was ', datestr(now - start,'HH:MM:SS:FFF')])
     
 end
-
-if ispc && isfield(expt.fad,'movies'), VirtualDub(expt); end
