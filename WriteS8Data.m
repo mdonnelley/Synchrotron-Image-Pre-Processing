@@ -14,7 +14,7 @@ clear data
 
 % Get the list of dates in the folder
 date_dir = [basepath,expt.file.raw];
-date_list = dir(date_dir);
+date_list = dir(date_dir)
 
 % Check each day folder
 for i = 3:length(date_list)
@@ -95,7 +95,7 @@ for i = 3:length(date_list)
                     runs = str2num(image_list(length(image_list)).name(max(pos)+2:max(pos)+3));
                     
                     % Check the number of images for each run
-                    for k = 1:runs
+                    for k = 1:runs,
                         
                         % Get the list of files for the run
                         run_dir = sprintf('%s%s%.2d_',image_list(length(image_list)).name(1:max(pos)-1),expt.naming.run_prefix,k);

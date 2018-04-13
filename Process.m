@@ -11,7 +11,7 @@ function Process(experiment)
 %******************************************************
 %
 
-setbasepath
+setbasepath;
 
 % Load the metadata from the dataset to analyse
 run(experiment);
