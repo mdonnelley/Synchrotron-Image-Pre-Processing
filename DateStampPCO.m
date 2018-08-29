@@ -38,4 +38,4 @@ DateVector = [...
 dt = datetime(DateVector);
 
 % Check that the conversion was successful
-if(size(dt,1) ~= 1) error('No time stamp detected in PCO file'); end
+if(size(dt,1) ~= 1) warning('No time stamp detected in PCO file'); end
