@@ -6,60 +6,41 @@ function FlatDarkCorrect(expt, imageset, flat, dark);
 %
 % Written by: Martin Donnelley
 % Date: 16/04/2010
-% Last updated: 27/11/2012
+% Last updated: 17/07/2020
 %
 %******************************************************
 %
 
 % Set the base pathname for the current machine
 setbasepath;
-if isfield(expt.naming,'zeropad') zeropad = expt.naming.zeropad; else zeropad = 4; end
 
-fprintf('Read directory %s%s\n', [basepath,expt.file.raw], expt.info.image{imageset});
-fprintf('Write directory %s%s\n', [basepath,expt.fad.corrected], expt.info.image{imageset});
-
-% Check destination directories exists
-current_dir = [basepath,expt.fad.corrected,expt.info.image{imageset}];
+% Set directories
+read_dir = fullfile(basepath,expt.file.raw,expt.info.image{imageset});
+fprintf('Read directory %s\n', read_dir);
+write_dir = fullfile(basepath,expt.fad.corrected,expt.info.image{imageset});
+fprintf('Write directory %s\n', write_dir);
 if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
-    mkdir([current_dir,expt.fad.FAD_path_high]);
+    mkdir(fullfile(write_dir,expt.fad.FAD_path_high));
 end
-
 if strcmp(expt.fad.output, 'LOW') | strcmp(expt.fad.output, 'BOTH')
-    mkdir([current_dir,expt.fad.FAD_path_low]);
+    mkdir(fullfile(write_dir,expt.fad.FAD_path_low));
 end
 
 % Perform the correction
-for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
+filelist = dir([read_dir,expt.info.imagestart{imageset},'*',expt.naming.type]);
+for i = 1:length(filelist),
     
-    fprintf(['Image ', num2str(i), ' of ', num2str(expt.info.imagegoto(imageset)), '\n']);
+    input_file = [read_dir,filelist(i).name];
+    fprintf(['Image ', num2str(i), ' of ', num2str(length(filelist)), '\n']);
     
-    % Determine the image name
-    if isfield(expt.fad,'multipage'),
-        if expt.fad.multipage,
-            imagename = [basepath,...
-                expt.file.raw,...
-                expt.info.image{imageset},...
-                expt.info.imagestart{imageset},...
-                expt.info.imageformat{imageset}];
-        end
-    else
-        imagename = [basepath,...
-            expt.file.raw,...
-            expt.info.image{imageset},...
-            expt.info.imagestart{imageset},...
-            sprintf(['%.',num2str(zeropad),'d'],i),...
-            expt.info.imageformat{imageset}];
-    end
-
-    if exist(imagename),
-        
-        % Load the image (images are likely 12 to 14-bit prior to FAD correction)
+    % Load the image (images are likely 12 to 16-bit prior to FAD correction)
+    if exist(input_file),
         if isfield(expt.fad,'multipage'),
             if expt.fad.multipage,
-                [rawimage, t] = ReadFileTime(imagename, i);
+                [rawimage, t] = ReadFileTime(input_file, i);
             end
         else
-            [rawimage, t] = ReadFileTime(imagename);
+            [rawimage, t] = ReadFileTime(input_file);
         end
         inimage = double(rawimage);
         
@@ -96,7 +77,7 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
         
     else
         
-        warning(['File "',imagename,'" does not exist: Creating blank.'])
+        warning(['File "',input_file,'" does not exist: Creating blank.'])
         final = 0.5 * ones(size(inimage));
         
     end
@@ -104,27 +85,29 @@ for i = expt.info.imagegofrom(imageset):expt.info.imagegoto(imageset),
     % Crop the output image
     if isfield(expt.fad,'crop') final = final(expt.fad.crop(2):expt.fad.crop(4),expt.fad.crop(1):expt.fad.crop(3)); end
     
+    outfile = regexp(filelist(i).name,'_|\.','split');
+    
     % Create and save the high quality version (NOTE: the images are now 16-bit, not the original dynamic range)
     if strcmp(expt.fad.output, 'HIGH') | strcmp(expt.fad.output, 'BOTH')
-        SixteenBitImage = uint16(final * 65535); 
-        high = [current_dir,...
+        SixteenBitImage = uint16(final * 65535);
+        high = fullfile(write_dir,...
             expt.fad.FAD_path_high,...
-            expt.info.imagestart{imageset},...
+            [expt.info.imagestart{imageset},...
             expt.fad.FAD_file_high,...
-            sprintf(['%.',num2str(zeropad),'d'],i),...
-            '.tif'];
-        imwrite(SixteenBitImage, high, 'Comment', num2str(t));
+            outfile{2},...
+            '.tif']);
+        imwrite(SixteenBitImage, high, 'Description', num2str(t));
     end
     
     % Create and save the low quality version
     if strcmp(expt.fad.output, 'LOW') | strcmp(expt.fad.output, 'BOTH')
         EightBitImage = uint8(final * 256);
-        low = [current_dir,...
+        low = fullfile(write_dir,...
             expt.fad.FAD_path_low,...
-            expt.info.imagestart{imageset},...
+            [expt.info.imagestart{imageset},...
             expt.fad.FAD_file_low,...
-            sprintf(['%.',num2str(zeropad),'d'],i),...
-            '.jpg'];
+            outfile{2},...
+            '.jpg']);       
         imwrite(EightBitImage, low, 'Comment', num2str(t));
     end
  

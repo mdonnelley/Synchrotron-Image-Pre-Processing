@@ -67,7 +67,7 @@ elseif isfield(info, 'ImageDescription'),
         
     end
     
-    % FD Correction code (t written as metadata)
+% FD Correction code (t written as metadata)
 elseif isfield(info, 'Comment'),
     
     t = str2num(info.Comment{1});

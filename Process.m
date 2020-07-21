@@ -38,21 +38,13 @@ for imageset = expt.fad.runlist,
     % Create movie of FD corrected images
     if ispc && isfield(expt.fad,'movies'),
         
-        % Get the input file list
-        infiles = dir([basepath,...
-            expt.fad.corrected,...
-            expt.info.image{imageset},...
-            expt.fad.FAD_path_low,...
-            expt.info.imagestart{imageset},'*']);
-        
-        % Get the output folder and filename
-        outfolder = [basepath,...
-            expt.fad.movies];
+        % Get the input and output file details
+        infiles = dir(fullfile(basepath,expt.fad.corrected,expt.info.image{imageset},expt.fad.FAD_path_low,[expt.info.imagestart{imageset},'*']));
+        outfolder = fullfile(basepath,expt.fad.movies)
         if ~exist(outfolder), mkdir(outfolder); end
-        outfile = [outfolder,...
-            expt.info.imagestart{imageset},...
-            'mov'];
+        outfile = fullfile(outfolder,[expt.info.imagestart{imageset},'mov']);
         
+        % Create the video
         Create_Video(infiles,outfile,framerate);
     
     end

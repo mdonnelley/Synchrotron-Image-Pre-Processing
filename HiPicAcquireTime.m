@@ -7,10 +7,9 @@ function t = HiPicAcquireTime(filename)
 info = imfinfo(filename);
 HiPicMetadata = info.ImageDescription;
 
-a = strfind(HiPicMetadata,'Time="');
-b = strfind(HiPicMetadata,'ms",');
-t = str2num(HiPicMetadata(a+6:b-1));
-
-if isempty(t), t = 0; end
-
-t = t/1000;
+timeString = regexp(HiPicMetadata,'Time="(.*)ms"','tokens');
+if isempty(timeString),
+    t = 0;
+else
+    t = str2num(string(timeString)) / 1000;
+end
