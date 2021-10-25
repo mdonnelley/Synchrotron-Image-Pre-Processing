@@ -36,17 +36,17 @@ for i = 3:length(date_list)
                 %% Check if there are flat files present
                 image_list = dir(fullfile(date_dir,sample_dir,image_dir,['*',expt.naming.flat_prefix,'*',expt.naming.type]));
                 if ~isempty(image_list),
-                    data{row,6} = fullfile(sample_dir,'/',image_dir,'/');
-                    m = strfind(image_list(1).name,expt.naming.flat_prefix) + length(expt.naming.flat_prefix) - 1;
-                    data{row,7} = image_list(1).name(1:m);
+                    data{row,6} = fullfile(sample_dir,image_dir);
+                    outfile = regexp(image_list(i).name,'_|\.','split');
+                    data{row,7} = [outfile{1},'_'];
                 end
                 
                 %% Check if there are dark files present
                 image_list = dir(fullfile(date_dir,sample_dir,image_dir,['*',expt.naming.dark_prefix,'*',expt.naming.type]));
                 if ~isempty(image_list),
-                    data{row,11} = fullfile(sample_dir,'/',image_dir,'/');
-                    m = strfind(image_list(1).name,expt.naming.dark_prefix) + length(expt.naming.dark_prefix) - 1;
-                    data{row,12} = image_list(1).name(1:m);
+                    data{row,11} = fullfile(sample_dir,image_dir);
+                    outfile = regexp(image_list(i).name,'_|\.','split');
+                    data{row,12} = [outfile{1},'_'];
                 end
                 
                 %% Get the list of all experiment files with the expt.naming.file_prefix
@@ -65,13 +65,14 @@ for i = 3:length(date_list)
 
                         % Get the list of files for the run
                         imagepath = fullfile(sample_dir,'/',image_dir,'/');
-                        imagestart = sprintf('%s%.2d%s%.2d_',expt.naming.file_prefix,ID,expt.naming.run_prefix,k);
+                        imagestart = sprintf('%s%.2d%s%.2d',expt.naming.file_prefix,ID,expt.naming.run_prefix,k);
                         run_list = dir(fullfile(date_dir,imagepath,[imagestart,'*',expt.naming.type]));
                      
                         if ~isempty(run_list),
 
+                            outfile = regexp(run_list(1).name,'_|\.','split');
                             data{row,1} = imagepath;
-                            data{row,2} = imagestart;
+                            data{row,2} = [outfile{1},'_'];
 
                             % Display the current dataset then increment the row counter
                             data(row,:)
