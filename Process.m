@@ -19,15 +19,18 @@ run(experiment);
 % Load the info
 expt.info = ReadS8Data(expt.file.filelist);
 
+% Record the command window output
+diary(fullfile(basepath,expt.fad.corrected,sprintf('FDC %s.txt', datestr(now,'yyyy-mm-dd HH-MM-SS'))));
+
 % Set the movie parameters
-framerate = 5;
+framerate = 20;
 
 % Process each experiment
 for imageset = expt.fad.runlist,
     
     start = now;
     
-    fprintf('Processing imageset %d of %d\n', imageset, length(expt.info.image));
+    fprintf('Processing imageset number %d (%d remaining)\n', imageset, length(expt.fad.runlist));
     
     % Load or average all of the flat and dark files
     [flat, dark] = AverageFlatDark(expt, imageset);
@@ -52,3 +55,5 @@ for imageset = expt.fad.runlist,
     disp(['Processing time for this imageset was ', datestr(now - start,'HH:MM:SS:FFF')])
     
 end
+
+diary off
