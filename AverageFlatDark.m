@@ -17,10 +17,15 @@ setbasepath;
 %% Load and average all of the flat files
 read_dir = fullfile(basepath, expt.file.raw, expt.info.flat{imageset});
 flat_files = dir([read_dir, expt.info.flatstart{imageset}, '*']);
-flat_average = fullfile(read_dir, [expt.info.flatstart{imageset}, '_FlatAverage.mat'])
+flat_average = fullfile(basepath, expt.fad.flatsdarks, [expt.info.flatstart{imageset}, '_FlatAverage.mat'])
+
+% If there is no flat file listed in the XLS sheet
+if isempty(expt.info.flat{imageset}),
+    
+    flat = 2^15 * ones(2048,2048);
 
 % If the flat files already exist
-if(exist(flat_average, 'file')),
+elseif(exist(flat_average, 'file')),
     
     fprintf('Loading averaged flat file %s\n', flat_average);
     load(flat_average,'flat');
@@ -59,10 +64,15 @@ end
 %% Load and average all of the dark files
 read_dir = fullfile(basepath, expt.file.raw, expt.info.dark{imageset});
 dark_files = dir([read_dir, expt.info.darkstart{imageset}, '*']);
-dark_average = fullfile(read_dir, [expt.info.darkstart{imageset}, '_DarkAverage.mat']);
+dark_average = fullfile(basepath, expt.fad.flatsdarks, [expt.info.darkstart{imageset}, '_DarkAverage.mat']);
 
-% If the dark files already exist
-if(exist(dark_average, 'file')),
+% If there is no dark file listed in the XLS sheet
+if isempty(expt.info.dark{imageset}),
+    
+    dark = zeros(2048,2048);
+
+% If the flat files already exist
+elseif(exist(dark_average, 'file')),
     
     fprintf('Loading averaged dark file %s\n', dark_average);
     load(dark_average,'dark');

@@ -23,7 +23,7 @@ for i = 3:length(date_list)
         
         % Get the list of samples in the folder
         sample_dir = date_list(i).name;
-        sample_list = dir([date_dir,sample_dir,'/',expt.naming.folder_prefix,'*']);
+        sample_list = dir(fullfile(date_dir,sample_dir,[expt.naming.folder_prefix,'*']));
         
         % Check each sample folder
         for j = 1:length(sample_list),

@@ -23,7 +23,7 @@ expt.info = ReadS8Data(expt.file.filelist);
 diary(fullfile(basepath,expt.fad.corrected,sprintf('FDC %s.txt', datestr(now,'yyyy-mm-dd HH-MM-SS'))));
 
 % Set the movie parameters
-framerate = 20;
+framerate = 5;
 
 % Process each experiment
 for imageset = expt.fad.runlist,

@@ -33,7 +33,10 @@ if isfield(expt.fad,'fliplr') if expt.fad.fliplr, final = fliplr(final); end; en
 if isfield(expt.fad,'adjust'),
     if islogical(expt.fad.adjust),
         if expt.fad.adjust,
-            final = imadjust(final);
+%             final = imadjust(final);  
+            out = final - min(min(final)); % EDITED FOR 2022B
+            final = out / max(max(out));
+            final = medfilt2(final);
         end;
     else
         final = imadjust(final, expt.fad.adjust);
