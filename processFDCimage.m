@@ -34,7 +34,7 @@ if isfield(expt.fad,'adjust'),
     if islogical(expt.fad.adjust),
         if expt.fad.adjust,
 %             final = imadjust(final);  
-            out = final - min(min(final)); % EDITED FOR 2022B
+            out = final - min(min(final)); % EDITED FOR 2022B and 2023A
             final = out / max(max(out));
             final = medfilt2(final);
         end;

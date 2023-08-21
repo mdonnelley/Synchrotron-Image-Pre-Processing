@@ -23,7 +23,7 @@ expt.info = ReadS8Data(expt.file.filelist);
 diary(fullfile(basepath,expt.fad.corrected,sprintf('FDC %s.txt', datestr(now,'yyyy-mm-dd HH-MM-SS'))));
 
 % Set the movie parameters
-framerate = 5;
+framerate = 10;
 
 % Process each experiment
 for imageset = expt.fad.runlist,
@@ -42,10 +42,10 @@ for imageset = expt.fad.runlist,
     if ispc && isfield(expt.fad,'movies'),
         
         % Get the input and output file details
-        infiles = dir(fullfile(basepath,expt.fad.corrected,expt.info.image{imageset},expt.fad.FAD_path_low,[expt.info.imagestart{imageset},'*']));
+        infiles = dir(fullfile(basepath,expt.fad.corrected,expt.info.image{imageset},expt.fad.FAD_path_low,[expt.info.imagestart{imageset},'*']))
         outfolder = fullfile(basepath,expt.fad.movies)
         if ~exist(outfolder), mkdir(outfolder); end
-        outfile = fullfile(outfolder,[expt.info.imagestart{imageset},'mov']);
+        outfile = fullfile(outfolder,[expt.info.imagestart{imageset},'_mov'])
         
         % Create the video
         Create_Video(infiles,outfile,framerate);

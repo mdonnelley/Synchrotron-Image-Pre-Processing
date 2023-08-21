@@ -6,7 +6,7 @@ function [flat, dark] = AverageFlatDark(expt, imageset)
 %
 % Written by: Martin Donnelley
 % Date: 16/04/2010
-% Last updated: 19/10/2021
+% Last updated: 15/08/2023
 %
 %******************************************************
 %
@@ -37,7 +37,16 @@ else
     flat = 0;
     filelist = dir(fullfile(read_dir,[expt.info.flatstart{imageset},'*',expt.naming.type]));
 
-    if isfield(expt.fad,'multipage'),
+    if strcmp(expt.naming.type, '.his'),
+        flatfile = his(fullfile(filelist.folder,filelist.name));
+        flatfile = flatfile.openStream();
+        for i = 1:flatfile.numFrames,
+            fprintf(['Loading flat file ', num2str(i), ' of ', num2str(flatfile.numFrames), '\n']);
+            rawimage = flatfile.getFrame(i);
+            flat = flat + double(rawimage) / flatfile.numFrames;
+        end
+        flatfile = flatfile.closeStream();
+    elseif strcmp(expt.naming.type, '.tif') & isfield(expt.fad,'multipage'),
         input_file = fullfile(read_dir,filelist.name);
         numfiles = length(imfinfo(input_file));
         for i = 1:numfiles,
@@ -45,7 +54,7 @@ else
             [rawimage, t] = ReadFileTime(input_file, i);
             flat = flat + double(rawimage) / numfiles;
         end
-    else
+    elseif strcmp(expt.naming.type, '.tif')
         numfiles = length(filelist);
         for i = 1:numfiles,
             input_file = fullfile(read_dir,filelist(i).name)
@@ -84,7 +93,16 @@ else
     dark = 0;
     filelist = dir(fullfile(read_dir,[expt.info.darkstart{imageset},'*',expt.naming.type]));
 
-    if isfield(expt.fad,'multipage'),
+    if strcmp(expt.naming.type, '.his'),
+        darkfile = his(fullfile(filelist.folder,filelist.name));
+        darkfile = darkfile.openStream();
+        for i = 1:darkfile.numFrames,
+            fprintf(['Loading dark file ', num2str(i), ' of ', num2str(darkfile.numFrames), '\n']);
+            rawimage = darkfile.getFrame(i);
+            dark = dark + double(rawimage) / darkfile.numFrames;
+        end
+        darkfile = darkfile.closeStream();
+    elseif strcmp(expt.naming.type, '.tif') & isfield(expt.fad,'multipage'),
         input_file = fullfile(read_dir,filelist.name);
         numfiles = length(imfinfo(input_file));
         for i = 1:numfiles,
@@ -92,7 +110,7 @@ else
             [rawimage, t] = ReadFileTime(input_file, i);
             dark = dark + double(rawimage) / numfiles;
         end
-    else
+    elseif strcmp(expt.naming.type, '.tif')
         numfiles = length(filelist);
         for i = 1:numfiles,
             input_file = fullfile(read_dir,filelist(i).name)

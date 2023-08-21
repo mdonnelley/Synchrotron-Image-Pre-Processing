@@ -6,7 +6,7 @@ function FlatDarkCorrect(expt, imageset, flat, dark);
 %
 % Written by: Martin Donnelley
 % Date: 16/04/2010
-% Last updated: 19/10/2021
+% Last updated: 15/08/2023
 %
 %******************************************************
 %
@@ -31,14 +31,25 @@ end
 % Get the list of files in the read directory
 filelist = dir([inpath,expt.info.imagestart{imageset},'*',expt.naming.type]);
 
+% Perform the correction for .his files
+if strcmp(expt.naming.type, '.his'),
+    infile = his(fullfile(filelist.folder,filelist.name));
+    infile = infile.openStream();
+    for i = 1:infile.numFrames,
+        fprintf(['Image ', num2str(i), ' of ', num2str(infile.numFrames), '\n']);
+        rawimage = infile.getFrame(i);
+        inimage = double(rawimage);
+        final = (inimage - dark) ./ (flat - dark);
+        final = processFDCimage(expt, final);
+        index = sprintf('%.4d',i);
+        writeFDCimage(expt, imageset, outpath, index, final, 0);
+    end
+    infile = infile.closeStream();
 % Perform the correction for multipage image files
-if isfield(expt.fad,'multipage'),
-    
+elseif strcmp(expt.naming.type, '.tif') & isfield(expt.fad,'multipage'),
     infile = fullfile(inpath,filelist.name);
     numfiles = length(imfinfo(infile));
-    
     for i = 1:numfiles,
-       
         fprintf(['Image ', num2str(i), ' of ', num2str(numfiles), '\n']);
         [rawimage, t] = ReadFileTime(infile, i);
         inimage = double(rawimage);
@@ -46,15 +57,11 @@ if isfield(expt.fad,'multipage'),
         final = processFDCimage(expt, final);
         index = sprintf('%.4d',i);
         writeFDCimage(expt, imageset, outpath, index, final, t);
-        
     end
-
 % Perform the correction for single image files
-else
-    
+elseif strcmp(expt.naming.type, '.tif')
     numfiles = length(filelist);
     for i = 1:numfiles,
-
         infile = fullfile(inpath,filelist(i).name)
         fprintf(['Image ', num2str(i), ' of ', num2str(numfiles), '\n']);
         [rawimage, t] = ReadFileTime(infile);
@@ -64,7 +71,6 @@ else
         outfile = regexp(filelist(i).name,'_|\.','split');
         index = outfile{2};
         writeFDCimage(expt, imageset, outpath, index, final, t);
-
     end
 end
 
