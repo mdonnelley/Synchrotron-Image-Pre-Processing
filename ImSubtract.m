@@ -1,4 +1,4 @@
-function Process(experiment)
+function ImSubtract(experiment)
 
 %
 %**********************************************************
@@ -18,10 +18,7 @@ run(experiment);
 
 % Load the info
 expt.info = ReadS8Data(expt.file.filelist);
-if ~exist(fullfile(basepath,expt.fad.corrected)), mkdir(fullfile(basepath,expt.fad.corrected)), end
-
-% Record the command window output
-diary(fullfile(basepath,expt.fad.corrected,sprintf('FDC %s.txt', datestr(now,'yyyy-mm-dd HH-MM-SS'))));
+if ~exist(fullfile(basepath,expt.fad.corrected)), mkdir(fullfile(basepath,expt.fad.corrected)), end;
 
 % Process each experiment
 for imageset = expt.fad.runlist,
